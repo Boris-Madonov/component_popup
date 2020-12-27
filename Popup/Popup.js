@@ -6,25 +6,33 @@ function Popup({
   isOpen,
   onClose,
 }) {
-  const handelEsc = useCallback((event) => {
-    if(event.keyCode === 27) {
+  const handlerEsc = useCallback((e) => {
+    if(e.keyCode === 27) {
+      onClose();
+    }
+  }, [onClose]);
+
+  const handlerOverlayClose = useCallback((e) => {
+    if(e.target.classList.contains('popup')) {
       onClose();
     }
   }, [onClose]);
 
   useEffect(() => {
-    document.addEventListener("keydown", handelEsc);
+    document.addEventListener("click", handlerOverlayClose);
 
     return () => {
-      document.removeEventListener("keydown", handelEsc);
+      document.removeEventListener("click", handlerOverlayClose);
     };
-  }, [handelEsc]);
+  }, [handlerOverlayClose]);
 
-  _handlerOverlayClose = (evt) => {
-    if(evt.target.classList.contains('popup')) {
-        this.close();
-    }
-  };
+  useEffect(() => {
+    document.addEventListener("keydown", handlerEsc);
+
+    return () => {
+      document.removeEventListener("keydown", handlerEsc);
+    };
+  }, [handlerEsc]);
 
   return(
     <section className={`popup popup__${name} ${isOpen && 'popup_opened'}`}>
