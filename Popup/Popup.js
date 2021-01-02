@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Popup.css';
 
 function Popup({
@@ -6,33 +6,33 @@ function Popup({
   isOpen,
   onClose,
 }) {
-  const handlerEsc = useCallback((e) => {
-    if(e.keyCode === 27) {
-      onClose();
-    }
-  }, [onClose]);
-
-  const handlerOverlayClose = useCallback((e) => {
-    if(e.target.classList.contains('popup')) {
-      onClose();
-    }
-  }, [onClose]);
-
   useEffect(() => {
-    document.addEventListener("click", handlerOverlayClose);
-
-    return () => {
-      document.removeEventListener("click", handlerOverlayClose);
+    const handlerEsc = e => {
+      if(e.keyCode === 27) {
+        onClose();
+      }
     };
-  }, [handlerOverlayClose]);
 
-  useEffect(() => {
     document.addEventListener("keydown", handlerEsc);
 
     return () => {
       document.removeEventListener("keydown", handlerEsc);
     };
-  }, [handlerEsc]);
+  }, [onClose]);
+
+  useEffect(() => {
+    const handlerOverlayClose = e => {
+      if (e.target.classList.contains('popup')) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("click", handlerOverlayClose);
+
+    return () => {
+      document.removeEventListener("click", handlerOverlayClose);
+    };
+  }, [onClose]);
 
   return(
     <section className={`popup popup__${name} ${isOpen && 'popup_opened'}`}>
